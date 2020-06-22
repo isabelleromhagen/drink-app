@@ -3,7 +3,7 @@ import '../styling/App.css';
 import drinks from '../images/drinks.jpg'
 
 
-function Home() {
+const Home = () => {
   return (
     <div className="Home">
       <h1>Welcome to The Cocktail Explorer!</h1>
