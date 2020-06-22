@@ -3,11 +3,12 @@ import '../styling/App.css';
 
 
 
-const Drink = ({name, image}) => {
+
+const Drink = ({result, handleOnClick}) => {
   return (
     <div className="Drink">
-      <p>Name: {name}</p>
-      <img src={image} alt="drinks"></img>
+      <p>Name: {result.name}</p>
+      <img src={result.image} alt="drinks" onClick={() => handleOnClick(result)}></img>
     </div>
   );
 }
