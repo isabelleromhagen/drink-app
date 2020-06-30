@@ -1,59 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import '../styling/App.css';
-import Information from '../data/drinks.json'
+import Data from '../data/drinks.json'
 import Drink from './Drink';
 import DrinkInfo from './DrinkInfo';
 
 const Explore = () => {
 
-    useEffect(() => {
-        console.log('useEffect');
-    }, [])
-
     const [imageClicked, setImageClicked] = useState(false);
     const [name, setName] = useState('');
     const [preparation, setPreparation] = useState('');
     const [image, setImage] = useState('');
-    const [search, setSearch] = useState('');
-    const [searchResults, setResults] = useState([]);
+    const [results, setResults] = useState([]);
     
+    useEffect(() => {
+        setResults("Enter something above and click search to search");
+    },[]);
 
-    let handleSearch = (e) => {
-        e.preventDefault()
-        console.log('searching ');
-
+    const handleSubmit = (e) => {
+        e.preventDefault();
         if(e) {
-            console.log('inside search if');
             const search = e.target.elements.searchField.value.trim();
-            setSearch(search);
-            searchMethod(search);
-            console.log('handling search for', search);
+            handleSearch(search);
         }
     }
-      
-    const searchMethod = () => {
-        console.log('looking for segvd', search);
-        setResults(
-            Information.cocktails.map(
-                (cocktail)=>(Information.cocktails.cocktail.name.toLowerCase().includes(search.toLowerCase())))
-                
-                );
-    
+
+    const handleSearch = (search) => {
+         setResults(
+             Data.cocktails.filter(cocktail => 
+                cocktail.name.toLowerCase().includes(search.toLowerCase())) 
+                .map((result, index) => ( 
+                        <Drink result={result} key={index} handleOnClick={handleOnClick}/>
+                    ))
+         ); 
+
+         console.log(results); 
     }
     
-    let handleOnClick = (result) => {
-
+    const handleOnClick = (result) => {
         if (result) {
-            
             setName(result.name);
             setPreparation(result.preparation)
             setImage(result.image);
             setImageClicked(true);
-            console.log(result);
         } 
-        else {
-            console.log('missed if');
-        }
+    }
+
+    const handleReturn = () => {
+        console.log('returning');
+        setImageClicked(false);
     }
  
   return (
@@ -61,29 +55,20 @@ const Explore = () => {
             {!imageClicked ? 
             <div >
                 <h1>Find your favorite drink!</h1>
-                <form onSubmit={handleSearch}>
+                <form onSubmit={handleSubmit}>
                         <input type="textField" name="searchField"></input>
                         <button>Search</button>
                 </form>
-                <div>
-                {
-                    searchResults.map((result, index) => 
-                        <Drink result={result} key={index} handleOnClick={handleOnClick}/>
-                    )
-                    
-                }
-                </div>
-                   
+                {results.length > 0 ? <div>{results}</div> : <h2>No such drink found</h2>}
             </div>
                 : 
             <div>
-                <DrinkInfo name={name} preparation={preparation} image={image}/>
+                <DrinkInfo name={name} preparation={preparation} image={image} handleReturn={handleReturn}/>
             </div>}
       </div>
-    
-    
   );
 
 }
 
 export default Explore;
+
